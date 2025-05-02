@@ -42,16 +42,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 const token = data.jwt;
                 const role = data.userRole; 
                 localStorage.setItem("token", token);
+                console.log("Stored token:", token);
                 alert("Login successful!");
             
-                if (role === "ADMIN") {
-                    window.location.href = "../html/HomeAdmin.html";
-                } else if (role === "EMPLOYEE") {
-                    window.location.href = "../html/HomeEmployee.html";
-                } else {
-                    alert("Unknown role, redirecting to default home.");
-                    window.location.href = "../html/home.html";
-                }
+                setTimeout(() => {
+                    if (role === "ADMIN") {
+                        window.location.href = "/html/HomeAdmin.html";
+                    } else if (role === "EMPLOYEE") {
+                        window.location.href = "/html/HomeEmployee.html";
+                    } else {
+                        alert("Unknown role, redirecting to default home.");
+                        window.location.href = "/html/home.html";
+                    }
+                }, 100);
             })            
             .catch(error => {
                 console.error("Login Error:", error);

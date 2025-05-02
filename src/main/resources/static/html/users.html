@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des utilisateurs</title>
+</head>
+<body>
+    <h1>Liste des utilisateurs</h1>
+    <ul id="userList"></ul>
+
+    <script>
+        const token = sessionStorage.getItem("token");
+        alert('token:',token);
+        
+        fetch("http://localhost:8080/api/admin/users", {
+            headers: {
+            "Authorization": `Bearer ${token}`
+        }
+        })
+            
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur HTTP: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const userList = document.getElementById('userList');
+
+                if (Array.isArray(data)) {
+                    data.forEach(user => {
+                        const li = document.createElement('li');
+                        li.textContent = `Nom: ${user.name}, Email: ${user.email}, Role: ${user.userRole}`;
+                        userList.appendChild(li);
+                    });
+                } else {
+                    console.error('La réponse n\'est pas un tableau:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des utilisateurs:', error);
+                alert('Échec du chargement des utilisateurs. Consultez la console.');
+            });
+    </script>
+    <script src="../js/verifierToken.js"></script>
+</body>
+</html>

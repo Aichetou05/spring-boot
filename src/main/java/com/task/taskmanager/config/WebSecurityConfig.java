@@ -35,9 +35,10 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> {}) 
             .authorizeHttpRequests(request -> request
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/html/**","/css/**","/js/**").permitAll()
+                .requestMatchers("/html/**","/css/**","/js/**","/images/**").permitAll()
                 .requestMatchers("/api/admin/**").hasAuthority(UserRole.ADMIN.name())
                 .requestMatchers("/api/employee/**").hasAuthority(UserRole.EMPLOYEE.name())
                 .anyRequest().authenticated()
