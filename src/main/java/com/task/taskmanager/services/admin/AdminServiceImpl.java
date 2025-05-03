@@ -79,31 +79,38 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public TaskDto updateTask(Long id, TaskDto taskDto) {
         Optional<Task> optionalTask = taskRepository.findById(id);
-        if (optionalTask.isPresent()) {
+        Optional<User> optionalUser = userRepository.findById(taskDto.getEmployeeId());
+        if (optionalTask.isPresent() && optionalUser.isPresent()) {
             Task existingTask = optionalTask.get();
             existingTask.setTitle(taskDto.getTitle());
             existingTask.setDescription(taskDto.getDescription());
             existingTask.setDueDate(taskDto.getDueDate());
             existingTask.setPriority(taskDto.getPriority());
             existingTask.setTaskStatus(mapStringToTaskStatus(String.valueOf(taskDto.getTaskStatus())));
-
-            Task updatedTask = taskRepository.save(existingTask);
-            return updatedTask.getTaskDto();
+            
+            existingTask.setUser(optionalUser.get());
+            return taskRepository.save(existingTask).getTaskDto();
         }
         return null;
     }
 
     private TaskStatus mapStringToTaskStatus(String status) {
-        return switch (status.toUpperCase()) {
+        return switch (status) {
             case "PENDING" -> TaskStatus.PENDING;
             case "COMPLETED" -> TaskStatus.COMPLETED;
             case "DEFERRED" -> TaskStatus.DEFERRED;
             case "CANCELLED" -> TaskStatus.CANCELLED;
-            case "INPROGRESS" -> TaskStatus.INPROGRESS;
-            default -> throw new IllegalArgumentException("Invalid task status: " + status);
+            default -> TaskStatus.INPROGRESS;
         };
     }
     
+    @Override
+    public List<TaskDto> getTasksByPriority(String priority) {
+        List<Task> tasks = taskRepository.findByPriorityIgnoreCase(priority);
+        return tasks.stream()
+                    .map(Task::getTaskDto)
+                    .toList();
+    }
 
     
 }

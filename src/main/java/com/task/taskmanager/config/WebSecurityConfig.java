@@ -38,6 +38,7 @@ public class WebSecurityConfig {
             .cors(cors -> {}) 
             .authorizeHttpRequests(request -> request
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/messages/**").authenticated()
                 .requestMatchers("/html/**","/css/**","/js/**","/images/**").permitAll()
                 .requestMatchers("/api/admin/**").hasAuthority(UserRole.ADMIN.name())
                 .requestMatchers("/api/employee/**").hasAuthority(UserRole.EMPLOYEE.name())

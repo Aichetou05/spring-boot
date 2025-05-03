@@ -1,7 +1,9 @@
 package com.task.taskmanager.controllers.admin;
 
 import java.util.List;
+import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,9 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.task.taskmanager.Dto.TaskDto;
+import com.task.taskmanager.entities.Task;
+import com.task.taskmanager.entities.User;
+import com.task.taskmanager.repositories.TaskRepository;
+import com.task.taskmanager.repositories.UserRepository;
 import com.task.taskmanager.services.admin.AdminService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +31,11 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 
     private final AdminService adminService;
+
+
+     @Autowired
+    private UserRepository userRepository;
+
 
     @GetMapping("/users")
     public ResponseEntity<?> getUsers(){
@@ -60,5 +72,30 @@ public class AdminController {
         if(updateTaskDto == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(updateTaskDto);
     }
+
+    @GetMapping("/tasks/filter")
+    public ResponseEntity<List<TaskDto>> getTasksByPriority(@RequestParam(value = "priority", required = false) String priority) {
+        if (priority != null && !priority.isEmpty()) {
+            return ResponseEntity.ok(adminService.getTasksByPriority(priority));
+        } else {
+            return ResponseEntity.ok(adminService.getAllTasks());
+        }
+    }
+    
+    @GetMapping("/searchUser")
+    public List<User> searchUsers(@RequestParam(required = false) String name, 
+                                  @RequestParam(required = false) String email) {
+        if (name != null && email != null) {
+            return userRepository.findByNameContainingOrEmailContaining(name, email);
+        } else if (name != null) {
+            return userRepository.findByNameContaining(name);
+        } else if (email != null) {
+            return userRepository.findByEmailContaining(email);
+        } else {
+            return userRepository.findAll();
+        }
+    }
+
+    
 
 }

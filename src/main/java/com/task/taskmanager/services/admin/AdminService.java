@@ -17,4 +17,5 @@ public interface AdminService {
     TaskDto getTaskById(Long id);
 
     TaskDto updateTask(Long id,TaskDto taskDto);
+    List<TaskDto> getTasksByPriority(String priority);
 }
