@@ -47,12 +47,13 @@ document.addEventListener("DOMContentLoaded", function () {
             
                 setTimeout(() => {
                     if (role === "ADMIN") {
-                        window.location.href = "/html/HomeAdmin.html";
+                        window.location.href = "../html/HomeAdmin.html";
+                        // window.location.href = "http://localhost:8080/html/HomeEmployee.html";
                     } else if (role === "EMPLOYEE") {
-                        window.location.href = "/html/HomeEmployee.html";
+                        window.location.href = "../html/HomeEmployee.html";
                     } else {
                         alert("Unknown role, redirecting to default home.");
-                        window.location.href = "/html/home.html";
+                        window.location.href = "../html/home.html";
                     }
                 }, 100);
             })            
